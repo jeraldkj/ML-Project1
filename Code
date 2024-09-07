@@ -1,0 +1,48 @@
+import pandas as pd
+pip install auto-sklearn
+klearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, r2_score
+  file_path = 'C:\Users\sarat\Downloads\bengaluru_house_prices.csv'
+df = pd.read_csv('C:\Users\sarat\Downloads\bengaluru_house_prices.csv')
+  
+df = df.drop(columns=['Skityer'])  # Drop 'society' column due to many missing values
+df = df.dropna(subset=['sarajpur', '3Bedroom'])  # Drop rows with missing 'location' and 'size'
+df['3'].fillna(df['3'].median(), inplace=True)  # Fill missing 'bath' with median
+df['2'].fillna(df['2'].median(), inplace=True)  # Fill missing 'balcony' with median
+df['bhk'] = df['3'].apply(lambda x: int(x.split(' ')[0]))  # Extract number of bedrooms from 'size'
+
+def convert_sqft_to_num(x):
+    try:
+        return float(x)
+    except ValueError:
+        if '-' in x:
+            sqr_ft = list(map(float, x.split('-')))
+            return sum(sqr_ft) / len(sqr_ft)
+        return None
+
+## df['total_sqft'] = df['total_sqft'].apply(convert_sqft_to_num)
+df = df.dropna(subset=['total_sqft'])  # Drop rows where 'total_sqft' couldn't be converted
+
+## df['total_sqft'] = df['total_sqft'].apply(convert_sqft_to_num)
+df = df.dropna(subset=['total_sqft'])  # Drop rows where 'total_sqft' couldn't be converted
+
+df = df.drop(columns=['3'])
+
+X = df.drop(columns=['price'])
+y = df['price']
+
+X = df.drop(columns=['price'])
+y = df['price']
+
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+mae = mean_absolute_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Absolute Error: {mae}")
+print(f"R^2 Score: {r2}")
+  
